@@ -1,0 +1,2 @@
+# SugarGen
+Sugarchain wallets generator.
