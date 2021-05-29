@@ -1,0 +1,3 @@
+requests
+https://github.com/Nugetzrul3/python-bitcoin-utils/archive/master.zip
+colorama
