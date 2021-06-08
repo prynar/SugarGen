@@ -3,6 +3,7 @@ from bitcoinutils.keys import P2pkhAddress, PrivateKey, PublicKey
 from bitcoinutils.setup import setup
 from bitcoinutils.script import Script
 from bitcoinutils.keys import P2wpkhAddress, P2wshAddress, P2shAddress, PrivateKey, PublicKey
+from bitcoinutils import constants
 import requests
 import json
 from colorama import Fore, Back, Style
@@ -13,6 +14,7 @@ def runner():
 
 def main():
     # always remember to setup the network
+    constants.NETWORK_SEGWIT_PREFIXES["mainnet"] = "sugar"
     setup('mainnet')
 
 
