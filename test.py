@@ -1,7 +1,9 @@
 from bitcoinutils.setup import setup
 from bitcoinutils.script import Script
+from numba import jit
 from bitcoinutils.keys import P2wpkhAddress, P2wshAddress, P2shAddress, PrivateKey, PublicKey
 from bitcoinutils import constants
+@jit(target ="cuda")
 def main():
     constants.NETWORK_SEGWIT_PREFIXES["mainnet"] = "sugar"
     # always remember to setup the network
